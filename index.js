@@ -3,15 +3,15 @@ require('./connect-mongodb')
 const express = require('express');
 const bodyParser = require('body-parser');
 const authService = require('./authService');
+const routers = require('./routers/index');
 // const hbs = require('nodemailer-handlebars');
 // const cors = require('cors');
-const expbs = require('express-handlebars')
-
-const routers = require('./routers/index')
-
+// const expbs = require('express-handlebars')
 
 const PORT = process.env.PORT || 4000;
 const app = express();
+
+app.use(express.static('public'))
 
 app.use(function (req, res, next) {
 
@@ -34,21 +34,23 @@ app.use(function (req, res, next) {
 
 // app.use(cors)
 app.use(bodyParser.json())
-// Add headers
-
-// app.engine('handlebars', expbs());
-// app.set('view engine', 'handlebars')
-
-app.use('/api/v1/user', authService.authenticateToken);
+// app.use('/api/v1/user', authService.authenticateToken);
 
 app.use(routers)
 
+app.use((req, res, next) => {
+    const error = new Error("Not found");
+    error.status(404);
+    next(error)
+})
+
 app.use((err, req, res, next) => {
-    res.status(500)
-        .json({
+    res.status(err.status || 500);
+    res.json({
             message: err.message,
             stack: err.stack
         })
+    // res.render('error', { error: err })
 })
 
 app.listen(PORT, (err) => {
