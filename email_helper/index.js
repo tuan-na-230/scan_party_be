@@ -134,11 +134,57 @@ const emailHandler = {
             text: 'For clients with plaintext support only',
             html: `
             <div style="padding:0;background-color:#fafafa;height:100%!important;margin:0 auto!important;width:100%!important">
+            <div style="Margin:0 auto;max-width:650px">
+                <table style="border-collapse: collapse; margin: 0 auto; width: 100%; max-width: 650px; background-color: #4b2999">
+                    <tbody>
+                        <tr>
+                            <img style="width: 100%; height: 120px; background-size: cover;" alt src="https://www.talkwalker.com/images/2020/blog-headers/image-analysis.png" />
+                        </tr>
+                        <tr>
+                            <td style="margin: 30px auto; color: white; text-align: center;">
+                                <h3>Your new password: <strong>${newPassword}</strong></h3>
+                            </td>
+                        </tr>
+                        <tr>
+                        <td style="padding:0;font-size:13px;line-height:0">
+                            <table style="width: 100%; max-width: 650px; background-color: white; margin: auto; color: white; text-align: center;">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <table style="margin: 10px auto; color: #333; text-align: center;">
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <p>Copyright c Scan Party. All rights reserved.</p>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tbody>
+                </table>
+            </div>
+            </div>`
+        }
+        await this.mySendMail(dataSend, 'index')
+    },
+
+    async sendMailResetPassword2(data, newPassword) {
+        let dataSend = {
+            to: data.email,
+            subject: 'New Password',
+            text: 'For clients with plaintext support only',
+            html: `
+            <div style="padding:0;background-color:#fafafa;height:100%!important;margin:0 auto!important;width:100%!important">
                 <div style="Margin:0 auto;max-width:650px; border: 1px solid black;">
                     <table style="border-collapse: collapse; margin: 0 auto; width: 100%; max-width: 650px; background-color: #4b2999">
                         <tbody>
                             <tr>
-                                <img style="width: 100%; height: 300px; background-size: cover;" alt src="https://www.talkwalker.com/images/2020/blog-headers/image-analysis.png" />
+                                <img style="width: 100%; height: 120px; background-size: cover;" alt src="https://www.talkwalker.com/images/2020/blog-headers/image-analysis.png" />
                             </tr>
                             <tr>
                                 <td style="padding:0;font-size:0;line-height:0">
