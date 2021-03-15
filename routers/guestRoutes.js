@@ -1,11 +1,12 @@
 const express = require("express");
 const multer = require("multer");
 const eventHandle = require("../modules/event");
-const eventRouter = new express.Router();
+const guestHandle = require("../modules/guest");
+const guestRouter = new express.Router();
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "./public/uploads/excel");
+    cb(null, "./public/uploads/excels");
   },
   filename: function (req, file, cb) {
     cb(null, `${Date.now()}-${file.originalname}`);
@@ -14,8 +15,11 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-eventRouter.get("/", eventHandle.getManyEvent);
+//upload excel file guest
+guestRouter.post(
+  "/upload-excel",
+  upload.single("file"),
+  guestHandle.uploadExcel
+);
 
-eventRouter.post("/", eventHandle.createEvent);
-
-module.exports = eventRouter;
+module.exports = guestRouter;
