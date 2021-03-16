@@ -10,7 +10,9 @@ const guestHandle = {
           (rows) => {
             const keys = rows.shift();
             const data = rows.map((element) => _.zipObject(keys, element));
-            console.log(data);
+            data.forEach((ele) => {
+              guestModel.create({...ele, dateCreated: Date.now() })
+            })
           }
         );
         return res.status(200).json({ message: "uploaded" });
