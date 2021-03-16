@@ -1,23 +1,33 @@
-const readXlsxFile = require("read-excel-file/node");
-const _ = require("lodash");
 const fileUploadModel = require("./model");
 
-const guestHandle = {
-    async uploadExcel(req, res, next) {
-        if (req.file) {
-            const data = {
-                name: req.file.filename,
-                path: `uploads/${req.file.filename}`,
-                user: 'qw'
-            }
-            const item = await fileUploadModel.create(data)
-            res.status(200).json({ message: "upload_success" });
-        } else {
-            res.status(401).json({ message: "required_file" });
-        }
-    },
+const fileUploadHandler = {
+  async uploadExcel(req, res, next) {
+    if (req.file) {
+      const data = {
+        name: req.file.filename,
+        path: `uploads/excels/${req.file.filename}`,
+        user: req.body.email,
+      };
+      const item = await fileUploadModel.create(data);
+      res.status(200).json({ message: "upload_success" });
+    } else {
+      res.status(404).json({ message: "required_file" });
+    }
+  },
 
-
+  async uploadNewAvatar(req, res, next) {
+    if (req.file) {
+      const data = {
+        name: req.file.filename,
+        path: `uploads/images/${req.file.filename}`,
+        user: req.body.email,
+      };
+      const item = await fileUploadModel.create(data);
+      res.status(200).json({ message: "upload_success" });
+    } else {
+      res.status(404).json({ message: "required_file" });
+    }
+  },
 };
 
-module.exports = guestHandle;
+module.exports = fileUploadHandler;

@@ -2,6 +2,7 @@ const express = require("express");
 const multer = require("multer");
 const eventHandle = require("../modules/event");
 const guestHandle = require("../modules/guest");
+const ticketHandler = require("../modules/ticket");
 const guestRouter = new express.Router();
 
 const storage = multer.diskStorage({
@@ -21,5 +22,6 @@ guestRouter.post(
   upload.single("file"),
   guestHandle.uploadExcel
 );
+guestRouter.post("/test", ticketHandler.createOne);
 
 module.exports = guestRouter;
