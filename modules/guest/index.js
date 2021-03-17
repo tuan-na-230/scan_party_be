@@ -33,7 +33,7 @@ const guestHandle = {
     }
   },
 
-  async createOne(ticket, req, res, next) {
+  async createOneByController(ticket, req, res, next) {
     try {
       const data = {
         info: req.body.info,
@@ -43,6 +43,30 @@ const guestHandle = {
       item
         ? res.status(200).json({ message: "create_success" })
         : res.status(404).json({ message: "create_fail" });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async createOneByAPi(req, res, next) {
+    try {
+      const data = {
+        info: req.body.info,
+        ticket: req.body.ticket,
+      };
+      const item = await guestModel.create(data);
+      item
+        ? res.status(200).json({ message: "create_success" })
+        : res.status(404).json({ message: "create_fail" });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async getMany(req, res, next) {
+    try {
+      const data = await guestModel.find();
+      res.status(200).json({ data: data });
     } catch (error) {
       next(error);
     }

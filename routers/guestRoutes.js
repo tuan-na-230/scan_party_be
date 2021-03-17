@@ -22,6 +22,9 @@ guestRouter.post(
   upload.single("file"),
   guestHandle.uploadExcel
 );
-guestRouter.post("/test", ticketHandler.createOne);
+
+guestRouter.post("/", guestHandle.createOneByAPi);
+
+guestRouter.get("/", guestHandle.getMany);
 
 module.exports = guestRouter;

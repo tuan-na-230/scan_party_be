@@ -9,17 +9,21 @@ const ticketSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  effectiveTime: {
+  expirationDate: {
     type: Date,
     require: [true, "required effective time!"],
   },
   status: {
     type: String,
-    default: "NOT_USE",
+    default: "NOT_IN_USE_YET",
   },
   event: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "EVENT",
+  },
+  ticketTemplate: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "TICKET_TEMPLATE",
   },
 });
 
