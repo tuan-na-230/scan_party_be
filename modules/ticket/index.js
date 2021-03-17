@@ -23,6 +23,20 @@ const ticketHandler = {
     }
   },
 
+  async createOneController(eventId, effectiveDate, next) {
+    try {
+      const data = {
+        value: shortid.generate(),
+        event: eventId,
+        expirationDate: helper.addDays(Date.now(), effectiveDate),
+      };
+      const item = await ticketModel.create(data);
+      return item;
+    } catch (error) {
+      next(error);
+    }
+  },
+
   async updateTicket(req, res, next) {
     try {
       const data = {

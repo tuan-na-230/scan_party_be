@@ -1,72 +1,78 @@
-require('dotenv').config();
-const nodemailer = require('nodemailer');
-const hbs = require('nodemailer-express-handlebars');
+require("dotenv").config();
+const nodemailer = require("nodemailer");
+const hbs = require("nodemailer-express-handlebars");
 
 const emailHandler = {
-    async mySendMail(data, template) {
-        let mailTransport = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: process.env.EMAIL,
-                pass: process.env.PASSWORD
-            },
-            logger: true,
-            debug: false
-        })
-        // let mailTransport = nodemailer.createTransport({
-        //     host: process.env.SMTP_HOST,
-        //     port: process.env.SMTP_PORT,
-        //     auth: {
-        //         user: process.env.SMTP_USER,
-        //         pass: process.env.SMTP_PASS
-        //     },
-        //     logger: true,
-        //     debug: false
-        // })
+  async mySendMail(data, template) {
+    let mailTransport = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.PASSWORD,
+      },
+      logger: true,
+      debug: false,
+    });
+    // let mailTransport = nodemailer.createTransport({
+    //   host: process.env.SMTP_HOST,
+    //   port: process.env.SMTP_PORT,
+    //   auth: {
+    //     user: process.env.SMTP_USER,
+    //     pass: process.env.SMTP_PASS,
+    //   },
+    //     logger: true,
+    //     debug: false,
+    // });
 
-        // mailTransport.use('compile', hbs({
-        //     viewEngine: 'express-handlebars',
-        //     // viewEngine: {
-        //     //     partialsDir: 'templates/partials',
-        //     //     extname: ".handlebars",
-        //     //     layout: 'templates/layouts'
-        //     // },
-        //     viewPath: 'templates',
-        //     extName: '.handlebars'
-        // }));
+    // mailTransport.use(
+    //   "compile",
+    //   hbs({
+    //     viewEngine: "express-handlebars",
+    //     // viewEngine: {
+    //     //     partialsDir: 'templates/partials',
+    //     //     extname: ".handlebars",
+    //     //     layout: 'templates/layouts'
+    //     // },
+    //     viewPath: "templates",
+    //     extName: ".handlebars",
+    //   })
+    // );
 
-        let { to, subject, text, html } = data
-        if (!to) {
-            throw new Error(`Missing info 'to'!`)
+    let { to, subject, text, html } = data;
+    if (!to) {
+      throw new Error(`Missing info 'to'!`);
+    }
+    if (!subject) {
+      throw new Error(`Missing info 'subject'!`);
+    }
+
+    await mailTransport.sendMail(
+      {
+        from: "<Scan-party>",
+        to,
+        subject,
+        text,
+        html,
+        template: "index",
+        context: {
+          name: "Accime Esterling",
+        },
+      },
+      (err, info) => {
+        if (err) {
+          console.error(err.message);
+        } else {
+          console.log({ message: "Success!", info });
         }
-        if (!subject) {
-            throw new Error(`Missing info 'subject'!`)
-        }
-
-        await mailTransport.sendMail({
-            from: '<Scan-party>',
-            to,
-            subject,
-            text,
-            html,
-            template: 'index',
-            context: {
-                name: 'Accime Esterling'
-            }
-        }, (err, info) => {
-            if (err) {
-                console.error(err.message)
-            } else {
-                console.log({ message: 'Success!', info })
-            }
-        })
-    },
-    async sendMailVerifyEmail(data) {
-        let dataSend = {
-            to: data.email,
-            subject: 'Confirm your email',
-            text: 'For clients with plaintext support only',
-            html: `
+      }
+    );
+  },
+  async sendMailVerifyEmail(data) {
+    let dataSend = {
+      to: data.email,
+      subject: "Confirm your email",
+      text: "For clients with plaintext support only",
+      html: `
             <table style="width: 100%; background-color: #fff; border-top: 3px solid #ee82ee; display: flex; justify-content: center;">
                 <tbody style="width: 650px; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; margin: 10px;">
                 <tr>
@@ -84,7 +90,9 @@ const emailHandler = {
                             <td
                                 style="width: 100%; background-color: #ff6347;text-align: center; margin: 0px 10px; border-radius: 5px; color: #fff">
                                 <p>your scanparty.com account was created, click <a
-                                        href="http://localhost:4000/api/v1/users/verify-email/${data._id}">here</a> to enabel your account</p>
+                                        href="http://localhost:4000/api/v1/users/verify-email/${
+                                          data._id
+                                        }">here</a> to enabel your account</p>
                             </td>
                         </tr>
                         <tr>
@@ -96,12 +104,6 @@ const emailHandler = {
                                         </th>
                                         <td style="background-color: #fb8d79; color: #333333; border-radius: 5px; padding: 10px">
                                             ${data.email}</td>
-                                    </tr>
-                                    <tr>
-                                        <th style="background-color: #ff8d79; color: #8c8c8c; border-radius: 5px; padding: 10px">
-                                            Password</th>
-                                        <td style="background-color: #fb8d79; color: #333333; border-radius: 5px; padding: 10px">
-                                            *${data.password}</td>
                                     </tr>
                                     <tr>
                                         <th style="background-color: #ff8d79; color: #8c8c8c; border-radius: 5px; padding: 10px">
@@ -122,40 +124,45 @@ const emailHandler = {
                     </td>
                 </tr>
                 </tbody>
-            </table>`
-        }
-        await this.mySendMail(dataSend, 'index')
-    },
+            </table>`,
+    };
+    await this.mySendMail(dataSend, "index");
+  },
 
-    async sendMailResetPassword(data, newPassword) {
-        let dataSend = {
-            to: data.email,
-            subject: 'New Password',
-            text: 'For clients with plaintext support only',
-            html: `
+  async sendMailResetPassword(data, newPassword) {
+    let dataSend = {
+      to: data.email,
+      subject: "New Password",
+      text: "For clients with plaintext support only",
+      html: `
             <div style="padding:0;background-color:#fafafa;height:100%!important;margin:0 auto!important;width:100%!important">
-            <div style="Margin:0 auto;max-width:650px">
-                <table style="border-collapse: collapse; margin: 0 auto; width: 100%; max-width: 650px; background-color: #4b2999">
-                    <tbody>
-                        <tr>
-                            <img style="width: 100%; height: 120px; background-size: cover;" alt src="https://www.talkwalker.com/images/2020/blog-headers/image-analysis.png" />
-                        </tr>
-                        <tr>
-                            <td style="margin: 30px auto; color: white; text-align: center;">
-                                <h3>Your new password: <strong>${newPassword}</strong></h3>
-                            </td>
-                        </tr>
-                        <tr>
+        <div style="Margin:0 auto;max-width:600px">
+            <table
+                style="border-collapse: collapse; margin: 0 auto; width: 100%; max-width: 600px" cellpadding="0" cellspacing="0">
+                <tbody>
+                    <tr>
+                        <td style="width: 100%; margin: 0 auto; text-align: center">
+                            <img style="width: 24px; height: 24px; background-size: cover; margin: auto" alt="logo"
+                                src="https://icons-for-free.com/iconfiles/png/512/account+circle+24px-131985189042594487.png" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style=" color: white; text-align: center; background-color: #4b2999; margin: 30px auto;">
+                            <h3>Your new password: <strong style="font-size: 24px">RS123123</strong></h3>
+                        </td>
+                    </tr>
+                    <tr>
                         <td style="padding:0;font-size:13px;line-height:0">
-                            <table style="width: 100%; max-width: 650px; background-color: white; margin: auto; color: white; text-align: center;">
+                            <table
+                                style="width: 100%; max-width: 600px; background-color: white; margin: auto; color: white; text-align: center;">
                                 <tbody>
                                     <tr>
                                         <td>
-                                            <table style="margin: 10px auto; color: #333; text-align: center;">
+                                            <table style="margin: 5px auto; color: #333; text-align: center;">
                                                 <tbody>
                                                     <tr>
                                                         <td>
-                                                            <p>Copyright c Scan Party. All rights reserved.</p>
+                                                            <p>Copyright © Scan Party. All rights reserved.</p>
                                                         </td>
                                                     </tr>
                                                 </tbody>
@@ -165,20 +172,21 @@ const emailHandler = {
                                 </tbody>
                             </table>
                         </td>
-                    </tbody>
-                </table>
-            </div>
-            </div>`
-        }
-        await this.mySendMail(dataSend, 'index')
-    },
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>`,
+    };
+    await this.mySendMail(dataSend, "index");
+  },
 
-    async sendMailResetPassword2(data, newPassword) {
-        let dataSend = {
-            to: data.email,
-            subject: 'New Password',
-            text: 'For clients with plaintext support only',
-            html: `
+  async sendMailResetPassword2(data, newPassword) {
+    let dataSend = {
+      to: data.email,
+      subject: "New Password",
+      text: "For clients with plaintext support only",
+      html: `
             <div style="padding:0;background-color:#fafafa;height:100%!important;margin:0 auto!important;width:100%!important">
                 <div style="Margin:0 auto;max-width:650px; border: 1px solid black;">
                     <table style="border-collapse: collapse; margin: 0 auto; width: 100%; max-width: 650px; background-color: #4b2999">
@@ -256,10 +264,87 @@ const emailHandler = {
                         </tbody>
                     </table>
                 </div>
-            </div>`
-        }
-        await this.mySendMail(dataSend, 'index')
-    }
-}
+            </div>`,
+    };
+    await this.mySendMail(dataSend, "index");
+  },
 
-module.exports = emailHandler
+  async sendTicket(data) {
+    let dataSend = {
+      to: data.email,
+      subject: `Vé mời tham gia sự kiện ${data.nameEvent}`,
+      text: "For clients with plaintext support only",
+      html: `
+        <div style="padding:0;background-color:#fafafa;height:100%!important;margin:0 auto!important;width:100%!important">
+            <div style="Margin:0 auto;max-width:650px">
+                <table style="border-collapse: collapse; margin: 0 auto; width: 100%; max-width: 650px; background-color: #4b2999">
+                    <tbody>
+                        <!-- <tr>
+                            <img style="width: 100%; height: 120px; background-size: cover;" alt src="https://www.talkwalker.com/images/2020/blog-headers/image-analysis.png" />
+                        </tr> -->
+                        <tr>
+                            <table style="width: 100%; background-image: url('https://images.cdn1.stockunlimited.net/preview1300/music-event-background-concept_1934779.jpg'); padding: 30px"">
+                                <tbody>
+                                    <tr>
+                                        <td style="margin: 30px auto; color: white; text-align: center;">
+                                            <h3> <strong>${data.nameEvent}</strong></h3>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="margin: 30px 20px; color: white; text-align: center;">
+                                            <h3> <strong>Địa điểm: ${data.addressEvent}</strong></h3>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="margin: 30px 20px; color: white; text-align: center;">
+                                            <h3> Thời gian: ${data.beginTimeEvent} ${data.endTimeEvent}</h3>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="margin: 30px 20px; color: white; text-align: center;">
+                                            <h3> Ngày: ${data.dateEvent}</h3>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="margin: 30px 20px; color: white; text-align: center;">
+                                            <h3> <strong>Kính mời: ${data.nameGuest}</strong></h3>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="margin: 30px 20px; color: white; text-align: center;">
+                                        <img src="${data.qrcode}" style=" height: 120px; background-size: cover" alt="qrcode" />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </tr>
+                        <tr>
+                        <td style="padding:0;font-size:13px;line-height:0">
+                            <table style="width: 100%; max-width: 650px; background-color: white; margin: auto; color: white; text-align: center;">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <table style="margin: 10px auto; color: #333; text-align: center;">
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <span>Copyright c Scan Party. All rights reserved.</span>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tbody>
+                </table>
+            </div>
+        </div>`,
+    };
+    await this.mySendMail(dataSend, "index");
+  },
+};
+
+module.exports = emailHandler;

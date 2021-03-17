@@ -3,7 +3,7 @@ const readXlsxFile = require("read-excel-file/node");
 const _ = require("lodash");
 const shortid = require("shortid");
 
-const guestHandle = {
+const guestHandler = {
   async uploadExcel(req, res, next) {
     if (req.body) {
       try {
@@ -33,16 +33,13 @@ const guestHandle = {
     }
   },
 
-  async createOneByController(ticket, req, res, next) {
+  async createOneByController(info, ticket, next) {
     try {
       const data = {
-        info: req.body.info,
+        info: info,
         ticket: ticket,
       };
       const item = guestModel.create(data);
-      item
-        ? res.status(200).json({ message: "create_success" })
-        : res.status(404).json({ message: "create_fail" });
     } catch (error) {
       next(error);
     }
@@ -73,4 +70,4 @@ const guestHandle = {
   },
 };
 
-module.exports = guestHandle;
+module.exports = guestHandler;

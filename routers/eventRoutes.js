@@ -18,4 +18,6 @@ eventRouter.get("/", eventHandle.getManyEvent);
 
 eventRouter.post("/", eventHandle.createEvent);
 
+eventRouter.post("/full-event", eventHandle.createFullEvent);
+
 module.exports = eventRouter;
