@@ -8,4 +8,6 @@ ticketRouter.post("/", ticketHandler.createOne);
 
 ticketRouter.post("/scan", ticketHandler.scanTicket);
 
+ticketRouter.get("/:eventId", ticketHandler.findManyByEvent)
+
 module.exports = ticketRouter;

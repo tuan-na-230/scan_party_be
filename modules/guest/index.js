@@ -68,6 +68,16 @@ const guestHandler = {
       next(error);
     }
   },
+
+  async getManyByEvent(req, res, next) {
+    try {
+      const eventId = req.params.eventId
+      const data = await guestModel.find({});
+      res.status(200).json({ data: data });
+    } catch (error) {
+      next(error);s
+    }
+  }
 };
 
 module.exports = guestHandler;

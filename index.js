@@ -7,6 +7,8 @@ const routers = require("./routers/index");
 const eventRouter = require("./routers/eventRoutes");
 const guestRouter = require("./routers/guestRoutes");
 const ticketRouter = require("./routers/ticketRoutes");
+const fileUploadRouter = require("./routers/uploadRoutes");
+const ticketTemplateRouter = require("./routers/ticketTemplateRoutes");
 // const hbs = require('nodemailer-handlebars');
 // const cors = require('cors');
 // const expbs = require('express-handlebars')
@@ -48,6 +50,8 @@ app.use(routers);
 app.use("/api/v1/events", eventRouter);
 app.use("/api/v1/guests", guestRouter);
 app.use("/api/v1/tickets", ticketRouter);
+app.use("/api/v1/files", fileUploadRouter);
+app.use("/api/v1/ticket-template", ticketTemplateRouter);
 
 app.use((req, res, next) => {
   const error = new Error("Not found");

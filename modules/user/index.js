@@ -3,6 +3,7 @@ const helper = require('../../helper');
 const jwt = require('jsonwebtoken');
 const refreshTokenHandler = require('../refreshToken/index');
 const emailHandler = require('../../email_helper');
+const fileUploadHandler = require('../fileUpload');
 
 const userHandler = {
     async signup(req, res, next) {
@@ -143,8 +144,9 @@ const userHandler = {
         if (req.body) {
             try {
                 let email = req.body.email;
-                const item = await userModel.findOneAndUpdate({ email: email }, { avatar: `${process.env.DOMAIN}/uploads/${req.file.filename}` }, { new: true })
+                const item = await userModel.findOneAndUpdate({ email: email }, { avatar: `${process.env.DOMAIN}/uploads/images/${req.file.filename}` }, { new: true })
                 !item && res.status(404).json({ message: 'email_do_not_exits' })
+                fileUploadHandler.uploadNewAvatar({filename: req.file.filename, id: item._id, type: 'image', path: `${process.env.DOMAIN}/uploads/images/${req.file.filename}`})
                 res.status(200).json({user: item, message: 'upload_avatar_success' })
             } catch (error) {
                 next(error)

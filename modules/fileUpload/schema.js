@@ -3,11 +3,15 @@ const mongoose = require('mongoose');
 const fileSchema = new mongoose.Schema({
     name: {
         type: Object,
-        require: [true, 'required name']
+        required: [true, 'required name']
+    },
+    type: {
+        type: String,
+        required: [true, 'required type file']
     },
     path: {
-        type: string,
-        require: [true, 'required path']
+        type: String,
+        required: [true, 'required path']
     },
     dateCreated: {
         type: Date,

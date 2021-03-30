@@ -21,6 +21,20 @@ const eventHandle = {
     }
   },
 
+  async getDetailEvent(req, res, next) {
+    if (req.body) {
+      try {
+        const eventId = req.params.eventId;
+        const item = await eventModel.findOne({_id: eventId});
+        res.status(200).json(item);
+      } catch (error) {
+        next(error);
+      }
+    } else {
+      res.status(401).json({ message: "required_body" });
+    }
+  },
+
   async createEvent(req, res, next) {
     if (req.body) {
       try {
@@ -68,7 +82,7 @@ const eventHandle = {
             nameGuest: "Nguyễn Anh Tuấn",
           };
           emailHandler.sendTicket(dataSendTicket);
-          res.status(200).json({ message: "ok" });
+          res.status(200).json({ message: "create_success" });
         });
       } catch (error) {
         next(error);

@@ -10,6 +10,10 @@ const EventSchema = new mongoose.Schema({
         type: String,
         required: [true, 'required address event']
     },
+    company: {
+        type: String, 
+        required: [true, 'required company name']
+    },
     time: {
         date: {
             type: Date,
