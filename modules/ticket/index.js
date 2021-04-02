@@ -78,27 +78,28 @@ const ticketHandler = {
 
   async findManyByEvent(req, res, next) {
     try {
-      let {
-        page = 1,
-        size = 10,
-        sort = 'asc',
-        sortBy = 'name'
-      } = req.query;
+      let { page = 1, size = 10, sort = "asc", sortBy = "name" } = req.query;
       const eventId = req.params.eventId;
-      page = parseInt(page)
-      size = parseInt(size)
+      page = parseInt(page);
+      size = parseInt(size);
 
       const skip = page * size;
       const limit = size;
-      const data = await ticketModel.find({ event: eventId }).skip(skip).limit(limit);
-      const count = await ticketModel.find({ event: eventId }).count()
+      const data = await ticketModel
+        .find({ event: eventId })
+        .skip(skip)
+        .limit(limit);
+      const count = await ticketModel.find({ event: eventId }).count();
       data
-        ? res.status(200).json({ content: data, pagination: {page: page, size: size, total: count, } })
+        ? res.status(200).json({
+            content: data,
+            pagination: { page: page, size: size, total: count },
+          })
         : res.status(404).json({ message: "guest_info_not_found" });
     } catch (error) {
       next(error);
     }
-  }
+  },
 };
 
 module.exports = ticketHandler;

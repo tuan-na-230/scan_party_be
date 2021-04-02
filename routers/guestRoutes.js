@@ -25,6 +25,8 @@ guestRouter.post(
 
 guestRouter.post("/", guestHandle.createOneByAPi);
 
-guestRouter.get("/", guestHandle.getMany);
+// guestRouter.get("/", guestHandle.getMany);
+
+guestRouter.get("/:ticketId", guestHandle.getOneByTicket);
 
 module.exports = guestRouter;
