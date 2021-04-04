@@ -4,39 +4,39 @@ const hbs = require("nodemailer-express-handlebars");
 
 const emailHandler = {
   async mySendMail(data, template) {
-    let mailTransport = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL,
-        pass: process.env.PASSWORD,
-      },
-      logger: true,
-      debug: false,
-    });
     // let mailTransport = nodemailer.createTransport({
-    //   host: process.env.SMTP_HOST,
-    //   port: process.env.SMTP_PORT,
+    //   service: "gmail",
     //   auth: {
-    //     user: process.env.SMTP_USER,
-    //     pass: process.env.SMTP_PASS,
+    //     user: process.env.EMAIL,
+    //     pass: process.env.PASSWORD,
     //   },
-    //     logger: true,
-    //     debug: false,
+    //   logger: true,
+    //   debug: false,
     // });
+    let mailTransport = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: process.env.SMTP_PORT,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+        logger: true,
+        debug: false,
+    });
 
-    // mailTransport.use(
-    //   "compile",
-    //   hbs({
-    //     viewEngine: "express-handlebars",
-    //     // viewEngine: {
-    //     //     partialsDir: 'templates/partials',
-    //     //     extname: ".handlebars",
-    //     //     layout: 'templates/layouts'
-    //     // },
-    //     viewPath: "templates",
-    //     extName: ".handlebars",
-    //   })
-    // );
+    mailTransport.use(
+      "compile",
+      hbs({
+        viewEngine: "express-handlebars",
+        // viewEngine: {
+        //     partialsDir: 'templates/partials',
+        //     extname: ".handlebars",
+        //     layout: 'templates/layouts'
+        // },
+        viewPath: "templates",
+        extName: ".handlebars",
+      })
+    );
 
     let { to, subject, text, html } = data;
     if (!to) {
@@ -130,6 +130,7 @@ const emailHandler = {
   },
 
   async sendMailResetPassword(data, newPassword) {
+      console.log(data,)
     let dataSend = {
       to: data.email,
       subject: "New Password",
@@ -148,7 +149,7 @@ const emailHandler = {
                     </tr>
                     <tr>
                         <td style=" color: white; text-align: center; background-color: #4b2999; margin: 30px auto;">
-                            <h3>Your new password: <strong style="font-size: 24px">RS123123</strong></h3>
+                            <h3>Your new password: <strong style="font-size: 24px">${newPassword}</strong></h3>
                         </td>
                     </tr>
                     <tr>
