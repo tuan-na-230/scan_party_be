@@ -25,7 +25,7 @@ const eventHandle = {
     if (req.body) {
       try {
         const eventId = req.params.eventId;
-        const item = await eventModel.findOne({_id: eventId});
+        const item = await eventModel.findOne({ _id: eventId });
         res.status(200).json(item);
       } catch (error) {
         next(error);
@@ -89,6 +89,17 @@ const eventHandle = {
       }
     } else {
       res.status(401).json({ message: "required_body" });
+    }
+  },
+
+  async delEvent(req, res, next) {
+    try {
+      const { eventId } = req.params;
+      console.log(eventId);
+      const item = await eventModel.findOneAndDelete({ eventId });
+      item && res.status(200).json({ message: "delete_event_success" });
+    } catch (error) {
+      next(error);
     }
   },
 };
