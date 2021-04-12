@@ -8,6 +8,8 @@ ticketRouter.post("/", ticketHandler.createOne);
 
 ticketRouter.post("/scan", ticketHandler.scanTicket);
 
-ticketRouter.get("/:eventId", ticketHandler.findManyByEvent)
+ticketRouter.get("/:eventId", ticketHandler.findManyByEvent);
+
+ticketRouter.get("/:eventId/countTicket", ticketHandler.getCountTicket);
 
 module.exports = ticketRouter;

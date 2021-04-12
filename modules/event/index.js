@@ -6,13 +6,30 @@ const moment = require("moment");
 
 const QRCode = require("qrcode");
 const { MongooseDocument } = require("mongoose");
+const guestModel = require("../guest/model");
+const chatHandler = require("../chatRoom");
+const ticketModel = require("../ticket/model");
+const e = require("cors");
 
 const eventHandle = {
   async getManyEvent(req, res, next) {
     if (req.body) {
       try {
-        const item = await eventModel.find();
-        res.status(200).json(item);
+        let { page = 1, size = 10, sort = "asc", sortBy = "name" } = req.query;
+        page = parseInt(page);
+        size = parseInt(size);
+
+        const skip = page * size;
+        const limit = size;
+        const item = await eventModel
+          .find()
+          .skip(skip)
+          .limit(limit);
+        const count = await eventModel.find().count();
+        res.status(200).json({
+          content: item,
+          pagination: { page: page, size: size, total: count },
+        });
       } catch (error) {
         next(error);
       }
@@ -52,7 +69,9 @@ const eventHandle = {
     if (req.body) {
       try {
         const { eventInfo, guestInfo, ticketTemplateInfo } = req.body;
-        const item = await eventModel.create(eventInfo);
+        const chat = await chatHandler.createOne({ name: eventInfo.name }, next);
+        console.log(chat)
+        const item = await eventModel.create({ ...eventInfo, chat: chat._id });
         guestInfo.forEach(async (ele, index) => {
           const ticket = await ticketHandler.createOneController(
             item._id,
@@ -62,8 +81,10 @@ const eventHandle = {
           const guest = await guestHandler.createOneByController(
             guestInfo[index],
             ticket._id,
+            item._id,
             next
           );
+
           let qrCode = await QRCode.toDataURL(ticket.value)
             .then((url) => {
               return url;
@@ -92,12 +113,56 @@ const eventHandle = {
     }
   },
 
-  async delEvent(req, res, next) {
+  async registerForm(req, res, next) {
     try {
       const { eventId } = req.params;
+      const data = req.body;
+      const event = await eventModel.findById(eventId)
+      const ticket = await ticketHandler.createOneController(eventId, 14, next);
+      const guest = await guestHandler.createOneByController(
+        data,
+        ticket._id,
+        eventId,
+        next
+      );
+      console.log(guest)
+      let qrCode = await QRCode.toDataURL(ticket.value)
+        .then((url) => {
+          return url;
+        })
+        .catch((err) => {
+          res.status(404).json({ message: err });
+        });
+      const dataSendTicket = {
+        email: data.email,
+        qrcode: qrCode,
+        nameEvent: event.name,
+        addressEvent: event.address,
+        dateEvent: moment(event.time.date).format("DD-MM-YYYY"),
+        beginTimeEvent: moment(event.time.beginTime).format("HH:mm"),
+        endTimeEvent: moment(event.time.endTime).format("HH:mm"),
+        nameGuest: data.name,
+      };
+      emailHandler.sendTicket(dataSendTicket);
+      res.status(200).json({ message: `create_success_we_sent_ticket_to_${data.email}` });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async delEvent(req, res, next) {
+    try {
+      const { eventId } = req.params
       console.log(eventId);
-      const item = await eventModel.findOneAndDelete({ eventId });
-      item && res.status(200).json({ message: "delete_event_success" });
+      const item = await eventModel.findByIdAndDelete(eventId);
+      if (item) {
+        res.status(200).json({ message: "delete_event_success" });
+      }
+      const guestList = await guestModel.find({ eventId });
+      guestList.forEach(ele => {
+        console.log("ele", ele)
+      })
+      // emailHandler.sendMailDelEvent()
     } catch (error) {
       next(error);
     }

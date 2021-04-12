@@ -13,6 +13,10 @@ const guestSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "TICKET",
   },
+  event: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "EVENT",
+  }
 });
 
 module.exports = guestSchema;

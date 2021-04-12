@@ -346,6 +346,58 @@ const emailHandler = {
     };
     await this.mySendMail(dataSend, "index");
   },
+
+  async sendMailDelEvent(data) {
+    let dataSend = {
+      to: data.email,
+      subject: `Thông báo hủy sự kiện: ${data.name}`,
+      text: "For clients with plaintext support only",
+      html: `l
+        <div style="padding:0;background-color:#fafafa;height:100%!important;margin:0 auto!important;width:100%!important">
+            <div style="Margin:0 auto;max-width:650px">
+                <table style="border-collapse: collapse; margin: 0 auto; width: 100%; max-width: 650px; background-color: #4b2999">
+                    <tbody>
+                        <!-- <tr>
+                            <img style="width: 100%; height: 120px; background-size: cover;" alt src="https://www.talkwalker.com/images/2020/blog-headers/image-analysis.png" />
+                        </tr> -->
+                        <tr>
+                            <table style="width: 100%; background-image: url('https://images.cdn1.stockunlimited.net/preview1300/music-event-background-concept_1934779.jpg'); padding: 30px"">
+                                <tbody>
+                                    <tr>
+                                        <td style="margin: 30px auto; color: white; text-align: center;">
+                                            <h3> <strong>${data.name}</strong> đã hủy</h3>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </tr>
+                        <tr>
+                        <td style="padding:0;font-size:13px;line-height:0">
+                            <table style="width: 100%; max-width: 650px; background-color: white; margin: auto; color: white; text-align: center;">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <table style="margin: 10px auto; color: #333; text-align: center;">
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <span>Copyright c Scan Party. All rights reserved.</span>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tbody>
+                </table>
+            </div>
+        </div>`,
+    };
+    await this.mySendMail(dataSend, "index");
+  },
 };
 
 module.exports = emailHandler;

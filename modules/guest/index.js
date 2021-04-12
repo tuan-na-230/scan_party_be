@@ -33,13 +33,15 @@ const guestHandler = {
     }
   },
 
-  async createOneByController(info, ticket, next) {
+  async createOneByController(info, ticket, eventId, next) {
     try {
       const data = {
         info: info,
         ticket: ticket,
+        event: eventId,
       };
       const item = guestModel.create(data);
+      return item
     } catch (error) {
       next(error);
     }
@@ -88,6 +90,17 @@ const guestHandler = {
       next(error);
     }
   },
+
+  async getLuckyPerson(req, res, next) {
+    try {
+      const eventId = req.params.eventId;
+      const guests = await guestModel.find({ event: eventId });
+      const luckyPerson = guests[Math.floor(Math.random() * (guests.length - 0) + 0)];
+      res.status(200).json(luckyPerson);
+    } catch (error) {
+      next(error);
+    }
+  }
 };
 
 module.exports = guestHandler;

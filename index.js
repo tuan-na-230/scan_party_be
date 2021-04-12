@@ -9,6 +9,7 @@ const guestRouter = require("./routers/guestRoutes");
 const ticketRouter = require("./routers/ticketRoutes");
 const fileUploadRouter = require("./routers/uploadRoutes");
 const ticketTemplateRouter = require("./routers/ticketTemplateRoutes");
+const chatRoomRouter = require("./routers/chatRoomRouter");
 // const hbs = require('nodemailer-handlebars');
 // const cors = require('cors');
 // const expbs = require('express-handlebars')
@@ -47,6 +48,7 @@ app.use(bodyParser.json());
 // app.use('/api/v1/user', authService.authenticateToken);
 
 app.use(routers);
+// app.use("/api/v1/chatrooms", chatRoomRouter);
 app.use("/api/v1/events", eventRouter);
 app.use("/api/v1/guests", guestRouter);
 app.use("/api/v1/tickets", ticketRouter);

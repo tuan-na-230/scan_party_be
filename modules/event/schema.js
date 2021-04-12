@@ -11,8 +11,11 @@ const EventSchema = new mongoose.Schema({
         required: [true, 'required address event']
     },
     company: {
-        type: String, 
+        type: String,
         required: [true, 'required company name']
+    },
+    description: {
+        type: String,
     },
     time: {
         date: {
@@ -42,8 +45,13 @@ const EventSchema = new mongoose.Schema({
         email: {
             type: String,
             required: [true, 'required email manager event']
-        }
-    }
+        },
+    },
+    chat: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "CHAT",
+    },
+
 });
 
 module.exports = EventSchema

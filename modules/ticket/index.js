@@ -4,6 +4,8 @@ const _ = require("lodash");
 const shortid = require("shortid");
 const ticketModel = require("./model");
 const helper = require("../../helper");
+const chatModel = require("../chatRoom/model");
+const eventModel = require("../event/model");
 
 const ticketHandler = {
   async createOne(req, res, next) {
@@ -63,7 +65,7 @@ const ticketHandler = {
           const guestInfo = await guestModel.findOne({ ticket: item._id });
 
           guestInfo
-            ? res.status(200).json({ data: guestInfo })
+            ? res.status(200).json({ data: { ...guestInfo._doc, expirationDate: item.expirationDate } })
             : res.status(404).json({ message: "guest_info_not_found" });
         } else {
           res.status(200).json({ message: "reject_ticket" });
@@ -92,10 +94,24 @@ const ticketHandler = {
       const count = await ticketModel.find({ event: eventId }).count();
       data
         ? res.status(200).json({
-            content: data,
-            pagination: { page: page, size: size, total: count },
-          })
+          content: data,
+          pagination: { page: page, size: size, total: count },
+        })
         : res.status(404).json({ message: "guest_info_not_found" });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async getCountTicket(req, res, next) {
+    try {
+      const { eventId } = req.params;
+      const countTicket = await ticketModel.find({ event: eventId }).count();
+      const event = await eventModel.findById(eventId)
+      const chat = await chatModel.findById(event.chat);
+      if (countTicket) {
+        res.status(200).json({ countTicket, countMessage: chat.messages.length })
+      }
     } catch (error) {
       next(error);
     }

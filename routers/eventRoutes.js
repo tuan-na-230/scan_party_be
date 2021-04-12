@@ -22,6 +22,8 @@ eventRouter.post("/full-event", eventHandle.createFullEvent);
 
 eventRouter.get("/:eventId", eventHandle.getDetailEvent);
 
+eventRouter.post("/:eventId/registerForm", eventHandle.registerForm);
+
 eventRouter.delete("/:eventId", eventHandle.delEvent);
 
 module.exports = eventRouter;
