@@ -47,10 +47,18 @@ const EventSchema = new mongoose.Schema({
             required: [true, 'required email manager event']
         },
     },
+    isAcceptGuestJoin: {
+        type: Boolean,
+        default: false
+    },
     chat: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "CHAT",
     },
+    rating: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "RATING",
+    }
 
 });
 

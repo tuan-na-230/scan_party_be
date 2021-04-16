@@ -62,7 +62,7 @@ const emailHandler = {
         if (err) {
           console.error(err.message);
         } else {
-          console.log({ message: "Success!", info });
+          console.log({ message: "success", info });
         }
       }
     );
@@ -280,9 +280,6 @@ const emailHandler = {
             <div style="Margin:0 auto;max-width:650px">
                 <table style="border-collapse: collapse; margin: 0 auto; width: 100%; max-width: 650px; background-color: #4b2999">
                     <tbody>
-                        <!-- <tr>
-                            <img style="width: 100%; height: 120px; background-size: cover;" alt src="https://www.talkwalker.com/images/2020/blog-headers/image-analysis.png" />
-                        </tr> -->
                         <tr>
                             <table style="width: 100%; background-image: url('https://images.cdn1.stockunlimited.net/preview1300/music-event-background-concept_1934779.jpg'); padding: 30px"">
                                 <tbody>
@@ -314,6 +311,11 @@ const emailHandler = {
                                     <tr>
                                         <td style="margin: 30px 20px; color: white; text-align: center;">
                                         <img src="${data.qrcode}" style=" height: 120px; background-size: cover" alt="qrcode" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="margin: 30px 20px; color: white; text-align: center;">
+                                            <a href="${data.linkInfo}">${data.linkInfo}</a>
                                         </td>
                                     </tr>
                                 </tbody>

@@ -2,6 +2,7 @@ const express = require("express");
 const multer = require("multer");
 const eventHandle = require("../modules/event");
 const guestHandle = require("../modules/guest");
+const ratingHandler = require("../modules/rating");
 const ticketHandler = require("../modules/ticket");
 const guestRouter = new express.Router();
 
@@ -30,5 +31,7 @@ guestRouter.post("/", guestHandle.createOneByAPi);
 guestRouter.get("/:eventId/luckyPerson", guestHandle.getLuckyPerson);
 
 guestRouter.get("/:ticketId", guestHandle.getOneByTicket);
+
+guestRouter.post("/:eventId/rating", ratingHandler.UpdateRating);
 
 module.exports = guestRouter;

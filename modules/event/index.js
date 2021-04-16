@@ -10,6 +10,7 @@ const guestModel = require("../guest/model");
 const chatHandler = require("../chatRoom");
 const ticketModel = require("../ticket/model");
 const e = require("cors");
+const ratingHandler = require("../rating");
 
 const eventHandle = {
   async getManyEvent(req, res, next) {
@@ -23,6 +24,7 @@ const eventHandle = {
         const limit = size;
         const item = await eventModel
           .find()
+          .populate("rating")
           .skip(skip)
           .limit(limit);
         const count = await eventModel.find().count();
@@ -42,7 +44,7 @@ const eventHandle = {
     if (req.body) {
       try {
         const eventId = req.params.eventId;
-        const item = await eventModel.findOne({ _id: eventId });
+        const item = await eventModel.findOne({ _id: eventId }).populate('rating');
         res.status(200).json(item);
       } catch (error) {
         next(error);
@@ -70,8 +72,8 @@ const eventHandle = {
       try {
         const { eventInfo, guestInfo, ticketTemplateInfo } = req.body;
         const chat = await chatHandler.createOne({ name: eventInfo.name }, next);
-        console.log(chat)
-        const item = await eventModel.create({ ...eventInfo, chat: chat._id });
+        const rating = await ratingHandler.createOne(next);
+        const item = await eventModel.create({ ...eventInfo, chat: chat._id, rating: rating._id });
         guestInfo.forEach(async (ele, index) => {
           const ticket = await ticketHandler.createOneController(
             item._id,
@@ -79,7 +81,7 @@ const eventHandle = {
             next
           );
           const guest = await guestHandler.createOneByController(
-            guestInfo[index],
+            ele,
             ticket._id,
             item._id,
             next
@@ -101,9 +103,10 @@ const eventHandle = {
             beginTimeEvent: moment(eventInfo.time.beginTime).format("HH:mm"),
             endTimeEvent: moment(eventInfo.time.endTime).format("HH:mm"),
             nameGuest: "Nguyễn Anh Tuấn",
+            linkInfo: `http://localhost:3000/guests/${item._id}`
           };
           emailHandler.sendTicket(dataSendTicket);
-          res.status(200).json({ message: "create_success" });
+          res.status(200).json({ message: "create_successfully" });
         });
       } catch (error) {
         next(error);
@@ -125,7 +128,6 @@ const eventHandle = {
         eventId,
         next
       );
-      console.log(guest)
       let qrCode = await QRCode.toDataURL(ticket.value)
         .then((url) => {
           return url;
@@ -153,7 +155,6 @@ const eventHandle = {
   async delEvent(req, res, next) {
     try {
       const { eventId } = req.params
-      console.log(eventId);
       const item = await eventModel.findByIdAndDelete(eventId);
       if (item) {
         res.status(200).json({ message: "delete_event_success" });

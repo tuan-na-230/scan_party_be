@@ -15,7 +15,7 @@ const userHandler = {
                     console.log(data)
                     const item = await userModel.create(data);
                     await emailHandler.sendMailVerifyEmail(item)
-                    res.status(200).json({ message: 'we sended to you email confirm !' });
+                    res.status(200).json({ message: 'we_sended_to_you_email_confirm' });
                 } catch (error) {
                     next(error)
                 }
@@ -106,7 +106,7 @@ const userHandler = {
         if (req.body) {
             try {
                 const email = req.body.email;
-                !email && res.status(404).json({ message: 'required email !' });
+                !email && res.status(404).json({ message: 'required_email' });
                 const item = await userModel.findOneAndUpdate({ email: email }, req.body, { new: true });
                 !item && res.status(404).json({ message: 'no_success' })
                 res.status(200).json({ user: item, message: 'cap_nhap_thanh_cong' })
@@ -127,7 +127,7 @@ const userHandler = {
                 !passwordVerify && res.status(404).json({ message: 'current_password_wrong' });
                 if (req.body.newPassword === req.body.confirmPassword) {
                     await userModel.findOneAndUpdate({ email: req.body.email }, { password: await helper.hashPassword(req.body.newPassword) }, { new: true });
-                    res.status(200).json({ message: 'change password successfully !' });
+                    res.status(200).json({ message: 'change_password_success' });
                 }
                 else {
                     res.status(401).json('confirm_password_wrong !')

@@ -10,6 +10,7 @@ const ticketRouter = require("./routers/ticketRoutes");
 const fileUploadRouter = require("./routers/uploadRoutes");
 const ticketTemplateRouter = require("./routers/ticketTemplateRoutes");
 const chatRoomRouter = require("./routers/chatRoomRouter");
+const ratingRouter = require("./routers/ratingRouter");
 // const hbs = require('nodemailer-handlebars');
 // const cors = require('cors');
 // const expbs = require('express-handlebars')
