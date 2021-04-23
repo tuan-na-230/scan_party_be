@@ -1,6 +1,7 @@
 require("dotenv").config();
 require("./connect-mongodb");
 const http = require("http");
+const path = require("path")
 const express = require("express");
 const bodyParser = require("body-parser");
 const authService = require("./authService");
@@ -18,7 +19,7 @@ const ticketHandler = require("./modules/ticket");
 const PORT = process.env.PORT || 4000;
 const app = express();
 
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, 'public/build')));
 
 app.use(function (req, res, next) {
   // Website you wish to allow to connect
@@ -46,6 +47,10 @@ app.use(function (req, res, next) {
 
 app.use(bodyParser.json());
 // app.use('/api/v1/user', authService.authenticateToken);
+
+app.get('/', function (req, res) {
+  res.sendFile(path.join(__dirname, 'public/build/index.html'))
+})
 
 app.use(routers);
 app.use("/api/v1/events", eventRouter);

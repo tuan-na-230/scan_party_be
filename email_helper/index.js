@@ -90,7 +90,7 @@ const emailHandler = {
                             <td
                                 style="width: 100%; background-color: #ff6347;text-align: center; margin: 0px 10px; border-radius: 5px; color: #fff">
                                 <p>your scanparty.com account was created, click <a
-                                        href="http://localhost:4000/api/v1/users/verify-email/${
+                                        href="${process.env.DOMAIN}/api/v1/users/verify-email/${
                                           data._id
                                         }">here</a> to enabel your account</p>
                             </td>
