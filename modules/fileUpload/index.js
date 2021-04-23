@@ -24,7 +24,6 @@ const fileUploadHandler = {
 
     async uploadNewAvatar(dataInput) {
         try {
-            console.log(dataInput)
             const data = {
                 name: dataInput.filename,
                 path: dataInput.path,

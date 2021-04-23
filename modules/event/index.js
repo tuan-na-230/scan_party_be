@@ -16,14 +16,14 @@ const eventHandle = {
   async getManyEvent(req, res, next) {
     if (req.body) {
       try {
-        let { page = 1, size = 10, sort = "asc", sortBy = "name" } = req.query;
+        let { page = 1, size = 10, sort = "asc", sortBy = "name", email } = req.query;
         page = parseInt(page);
         size = parseInt(size);
 
         const skip = page * size;
         const limit = size;
         const item = await eventModel
-          .find()
+          .find({ owner: email })
           .populate("rating")
           .skip(skip)
           .limit(limit);
@@ -58,7 +58,7 @@ const eventHandle = {
     if (req.body) {
       try {
         const item = await eventModel.create(req.body);
-        item && res.status(200).json({ message: "create_successfully" });
+        item && res.status(200).json({ message: "create_success" });
       } catch (error) {
         next(error);
       }
@@ -106,7 +106,7 @@ const eventHandle = {
             linkInfo: `http://localhost:3000/guests/${item._id}`
           };
           emailHandler.sendTicket(dataSendTicket);
-          res.status(200).json({ message: "create_successfully" });
+          res.status(200).json({ message: "create_success" });
         });
       } catch (error) {
         next(error);
@@ -154,16 +154,17 @@ const eventHandle = {
 
   async delEvent(req, res, next) {
     try {
-      const { eventId } = req.params
+      const { eventId } = req.params;
+      const guests = await guestModel.find({ event: eventId });
+      const event = await eventModel.findById(eventId)
       const item = await eventModel.findByIdAndDelete(eventId);
       if (item) {
+        guests.forEach(ele => {
+          let data = { email: ele.info ? ele.info.email : '', name: event.name }
+          emailHandler.sendMailDelEvent(data)
+        })
         res.status(200).json({ message: "delete_event_success" });
       }
-      const guestList = await guestModel.find({ eventId });
-      guestList.forEach(ele => {
-        console.log("ele", ele)
-      })
-      // emailHandler.sendMailDelEvent()
     } catch (error) {
       next(error);
     }

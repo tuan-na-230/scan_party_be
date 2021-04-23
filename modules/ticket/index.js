@@ -15,7 +15,6 @@ const ticketHandler = {
         event: req.body.eventId,
         expirationDate: helper.addDays(Date.now(), req.body.effectiveDate),
       };
-      console.log(data);
       const item = await guestModel.create(data);
       item
         ? res.status(200).json({ message: "create_success" })
@@ -60,18 +59,13 @@ const ticketHandler = {
         value: req.body.value,
       };
       const item = await ticketModel.findOne(data).populate("event");
-      if (item && item.event) {
-        if (item.event._id == req.body.eventId) {
-          const guestInfo = await guestModel.findOne({ ticket: item._id });
-
-          guestInfo
-            ? res.status(200).json({ data: { ...guestInfo._doc, expirationDate: item.expirationDate } })
-            : res.status(404).json({ message: "guest_info_not_found" });
-        } else {
-          res.status(200).json({ message: "reject_ticket" });
-        }
+      if (item) {
+        const guestInfo = await guestModel.findOne({ ticket: item._id });
+        guestInfo
+          ? res.status(200).json({ message: "accept_ticket" })
+          : res.status(404).json({ message: "guest_info_not_found" });
       } else {
-        return res.status(404).json({ message: "ticket_not_found" });
+        res.status(200).json({ message: "ticket_not_found" });
       }
     } catch (error) {
       next(error);
@@ -114,6 +108,37 @@ const ticketHandler = {
       }
     } catch (error) {
       next(error);
+    }
+  },
+  async getTicketUser(data) {
+    try {
+      const countTicket = await ticketModel.find({ event: data.eventId }).count();
+      const countTicketUsed = await ticketModel.find({ event: data.eventId, status: "USED" }).count();
+      return { countTicket, countTicketUsed }
+
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  async ScanTicketReal(input) {
+    try {
+      const { value, eventId } = input;
+      const data = {
+        value,
+        event: eventId
+      };
+      const item = await ticketModel.findOneAndUpdate(data, { status: "USED" });
+      let guestInfo
+      if (item) {
+        guestInfo = await guestModel.findOne({ ticket: item._id });
+      }
+      return guestInfo
+        ? { data: { ...guestInfo._doc, expirationDate: item.expirationDate } }
+        : { message: "ticket_not_found" };
+    }
+    catch (error) {
+      console.log(error);
     }
   },
 };

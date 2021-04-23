@@ -16,7 +16,7 @@ const chatHandler = {
             if (item) {
                 const listMessage = item.messages;
                 let dataWillPush;
-                if (newMessage.user = "Quản trị viên") {
+                if (newMessage.user === "Quản trị viên") {
                     dataWillPush = {...newMessage, isManagerViewed: true}
                 } else {
                     dataWillPush = {...newMessage, isManagerViewed: false}
@@ -27,9 +27,9 @@ const chatHandler = {
                 return result;
             }
         } catch (error) {
-            console.log(error)
+            next(error)
         }
-    },
+    }
 };
 
 module.exports = chatHandler;

@@ -126,9 +126,6 @@ nodemailer.createTestAccount((err, account) => {
             return process.exit(1);
         }
 
-        console.log('Message sent successfully!');
-        console.log(nodemailer.getTestMessageUrl(info));
-
         // only needed when using pooled connections
         transporter.close();
     });

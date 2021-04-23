@@ -130,7 +130,6 @@ const emailHandler = {
   },
 
   async sendMailResetPassword(data, newPassword) {
-      console.log(data,)
     let dataSend = {
       to: data.email,
       subject: "New Password",
@@ -367,7 +366,7 @@ const emailHandler = {
                                 <tbody>
                                     <tr>
                                         <td style="margin: 30px auto; color: white; text-align: center;">
-                                            <h3> <strong>${data.name}</strong> đã hủy</h3>
+                                            <h3>Sự kiện: <strong>${data.name}</strong> đã bị hủy</h3>
                                         </td>
                                     </tr>
                                 </tbody>

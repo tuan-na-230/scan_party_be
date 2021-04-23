@@ -17,7 +17,6 @@ const ticketTemplateHandler = {
     },
 
     async findMany(req, res, next) {
-        console.log('vao')
         try {
             const listTemplate = await ticketTemplateModel.find()
             listTemplate && res.status(200).json(listTemplate)      

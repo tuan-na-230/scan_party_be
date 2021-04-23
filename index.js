@@ -1,5 +1,6 @@
 require("dotenv").config();
 require("./connect-mongodb");
+const http = require("http");
 const express = require("express");
 const bodyParser = require("body-parser");
 const authService = require("./authService");
@@ -11,9 +12,8 @@ const fileUploadRouter = require("./routers/uploadRoutes");
 const ticketTemplateRouter = require("./routers/ticketTemplateRoutes");
 const chatRoomRouter = require("./routers/chatRoomRouter");
 const ratingRouter = require("./routers/ratingRouter");
-// const hbs = require('nodemailer-handlebars');
-// const cors = require('cors');
-// const expbs = require('express-handlebars')
+const chatHandler = require("./modules/Chat");
+const ticketHandler = require("./modules/ticket");
 
 const PORT = process.env.PORT || 4000;
 const app = express();
@@ -44,12 +44,10 @@ app.use(function (req, res, next) {
   next();
 });
 
-// app.use(cors)
 app.use(bodyParser.json());
 // app.use('/api/v1/user', authService.authenticateToken);
 
 app.use(routers);
-// app.use("/api/v1/chatrooms", chatRoomRouter);
 app.use("/api/v1/events", eventRouter);
 app.use("/api/v1/guests", guestRouter);
 app.use("/api/v1/tickets", ticketRouter);
@@ -68,11 +66,52 @@ app.use((err, req, res, next) => {
     message: err.message,
     stack: err.stack,
   });
-  // res.render('error', { error: err })
 });
 
-app.listen(PORT, (err) => {
-  err
-    ? console.error(err.message)
-    : console.log(`Server listening on port: ${PORT}`);
+const server = http.createServer(app);
+
+const io = require('socket.io')(server, {
+    cors: {
+        origin: '*',
+    }
 });
+
+io.on('connection', socket => {
+  console.log('new connect...');
+  //run when client disconnects
+  socket.on('disconnect', () => {
+      io.emit('message', 'A user has left the chart')
+  })
+
+  //listen change
+  socket.on('updateListMessage', async (chatId, newMessage) => {
+      const newListMessage = await chatHandler.updateListMessage(chatId, newMessage);
+      io.emit('listChat', newListMessage)
+  })
+
+  //get list chart
+  socket.on('getListChat' , async (chatId) => {
+      const listChat = await chatHandler.getListChat(chatId);
+      return io.emit('listChat', listChat);
+  })
+
+  socket.on('activeUser', (aliasName) => {
+      arrActiveUser.push(aliasName)
+  })
+
+  socket.on('scanTicket', async (data) => {
+      const guestData = await ticketHandler.ScanTicketReal(data);
+      const result = await ticketHandler.getTicketUser(data);
+      socket.emit('scanTicket', guestData)
+      io.emit('userJoin', result)
+  })
+
+  socket.on('userJoin', async (eventId) => {
+      const result = await ticketHandler.getTicketUser(eventId);
+      io.emit('userJoin', result)
+  })
+})
+
+server.listen(PORT, function () {
+  console.log(`listening on port ${PORT}`)
+})

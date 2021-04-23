@@ -10,9 +10,7 @@ const userHandler = {
         if (req.body) {
             if (req.body.password === req.body.confirmPassword) {
                 try {
-                    console.log(req.body.password)
                     const data = { ...req.body, password: await helper.hashPassword(req.body.password) }
-                    console.log(data)
                     const item = await userModel.create(data);
                     await emailHandler.sendMailVerifyEmail(item)
                     res.status(200).json({ message: 'we_sended_to_you_email_confirm' });
@@ -93,7 +91,7 @@ const userHandler = {
     async enableEmail(req, res, next) {
         try {
             const id = req.params.id
-            !id && res.status(404).json('required id')
+            !id && res.status(404).json('required_id')
             const item = await userModel.findByIdAndUpdate(id, { enable: true })
             !item && res.status(404).json('no_success')
             res.redirect('http://localhost:3000/users/sign-in')
@@ -109,7 +107,7 @@ const userHandler = {
                 !email && res.status(404).json({ message: 'required_email' });
                 const item = await userModel.findOneAndUpdate({ email: email }, req.body, { new: true });
                 !item && res.status(404).json({ message: 'no_success' })
-                res.status(200).json({ user: item, message: 'cap_nhap_thanh_cong' })
+                res.status(200).json({ user: item, message: 'update_success' })
             } catch (error) {
                 next(error)
             }
