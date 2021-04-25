@@ -12,6 +12,20 @@ const ticketModel = require("../ticket/model");
 const e = require("cors");
 const ratingHandler = require("../rating");
 
+function decodeBase64Image(dataString) {
+  var matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/),
+    response = {};
+
+  if (matches.length !== 3) {
+    return new Error('Invalid input string');
+  }
+
+  response.type = matches[1];
+  response.data = new Buffer(matches[2], 'base64');
+
+  return response;
+}
+
 const eventHandle = {
   async getManyEvent(req, res, next) {
     if (req.body) {
@@ -87,17 +101,18 @@ const eventHandle = {
             next
           );
 
-          let qrCode = await QRCode.toDataURL(ticket.value)
-            .then((url) => {
-              return url;
-            })
-            .catch((err) => {
-              res.status(404).json({ message: err });
-            });
-            console.log(ele)
+          // let qrCode = await QRCode.toDataURL(ticket.value)
+          //   .then((url) => {
+          //     return url;
+          //   })
+          //   .catch((err) => {
+          //     res.status(404).json({ message: err });
+          //   });
+          const fileLink = `uploads/tickets/${Date.now()}-${ticket.value}.png`;
+          await QRCode.toFile(`public/${fileLink}`, ticket.value);
           const dataSendTicket = {
             email: ele.email,
-            qrcode: qrCode,
+            qrcode: `${process.env.DOMAIN}/${fileLink}`,
             nameEvent: eventInfo.name,
             addressEvent: eventInfo.address,
             dateEvent: moment(eventInfo.time.date).format("DD-MM-YYYY"),
