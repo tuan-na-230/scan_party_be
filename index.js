@@ -53,10 +53,10 @@ app.get('/', function (req, res) {
 })
 
 app.use(routers);
-app.use("/api/v1/events", eventRouter);
+app.use("/api/v1/events",  eventRouter);
 app.use("/api/v1/guests", guestRouter);
 app.use("/api/v1/tickets", ticketRouter);
-app.use("/api/v1/files", fileUploadRouter);
+app.use("/api/v1/files", authService.authenticateToken, fileUploadRouter);
 app.use("/api/v1/ticket-template", ticketTemplateRouter);
 
 app.use((req, res, next) => {

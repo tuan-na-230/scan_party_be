@@ -8,7 +8,8 @@ const fileUploadHandler = {
                     name: req.file.filename,
                     path: `${process.env.DOMAIN}/uploads/excels/${req.file.filename}`,
                     user: req.body.id,
-                    type: req.body.type
+                    type: req.body.type,
+                    user: req.email
                 };
                 const item = await fileUploadModel.create(data);
                 if (item) {

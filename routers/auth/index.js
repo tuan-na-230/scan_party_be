@@ -40,10 +40,8 @@ router.post(
   userHandler.changeAvatar
 );
 
-router.get("/api/v1/user/1", (req, res) => {
+router.get("/api/v1/user/1", authService.authenticateToken, (req, res) => {
   res.send(req.email);
 });
-
-router.get("");
 
 module.exports = router;
