@@ -94,6 +94,7 @@ const eventHandle = {
             .catch((err) => {
               res.status(404).json({ message: err });
             });
+            console.log(ele)
           const dataSendTicket = {
             email: ele.email,
             qrcode: qrCode,

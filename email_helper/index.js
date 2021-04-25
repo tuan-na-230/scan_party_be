@@ -218,7 +218,7 @@ const emailHandler = {
                                     </tr>
                                     <tr>
                                         <td style="margin: 30px 20px; color: white; text-align: center;">
-                                        <img src="${data.qrcode}" style=" height: 120px; background-size: cover" alt="qrcode" />
+                                            <img src="${data.qrcode}" style=" height: 120px; background-size: cover" alt="qrcode" />
                                         </td>
                                     </tr>
                                     <tr>
