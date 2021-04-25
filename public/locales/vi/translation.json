@@ -107,5 +107,7 @@
     "delete_event": "Xóa sự kiện",
     "full_name": "Họ và tên",
     "gender": "Giới tính",
-    "accept_ticket": "Chấp nhận vé"
+    "accept_ticket": "Chấp nhận vé",
+    "invalid_email": "Email không hợp lệ",
+    "email_exists": "Tài khoản Email đã được sử dụng"
 }

@@ -10,10 +10,16 @@ const userHandler = {
         if (req.body) {
             if (req.body.password === req.body.confirmPassword) {
                 try {
-                    const data = { ...req.body, password: await helper.hashPassword(req.body.password) }
-                    const item = await userModel.create(data);
-                    await emailHandler.sendMailVerifyEmail(item)
-                    res.status(200).json({ message: 'we_sended_to_you_email_confirm' });
+                    const isEmailExits = await userModel.findOne({ email: req.body.email });
+                    if (isEmailExits) {
+                        res.status(404).json({ message: 'email_exists' })
+                    }
+                    else {
+                        const data = { ...req.body, password: await helper.hashPassword(req.body.password) }
+                        const item = await userModel.create(data);
+                        await emailHandler.sendMailVerifyEmail(item)
+                        res.status(200).json({ message: 'we_sended_to_you_email_confirm' });
+                    }
                 } catch (error) {
                     next(error)
                 }
@@ -144,8 +150,8 @@ const userHandler = {
                 let email = req.body.email;
                 const item = await userModel.findOneAndUpdate({ email: email }, { avatar: `${process.env.DOMAIN}/uploads/images/${req.file.filename}` }, { new: true })
                 !item && res.status(404).json({ message: 'email_do_not_exits' })
-                fileUploadHandler.uploadNewAvatar({filename: req.file.filename, id: item._id, type: 'image', path: `${process.env.DOMAIN}/uploads/images/${req.file.filename}`})
-                res.status(200).json({user: item, message: 'upload_avatar_success' })
+                fileUploadHandler.uploadNewAvatar({ filename: req.file.filename, id: item._id, type: 'image', path: `${process.env.DOMAIN}/uploads/images/${req.file.filename}` })
+                res.status(200).json({ user: item, message: 'upload_avatar_success' })
             } catch (error) {
                 next(error)
             }

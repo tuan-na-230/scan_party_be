@@ -109,5 +109,7 @@
     "delete_event": "Delete Event",
     "full_name": "Full Name",
     "gender": "Gender",
-    "accept_ticket": "Accept ticket"
+    "accept_ticket": "Accept ticket",
+    "invalid_email": "Invalid Email",
+    "email_exists": "Email existed"
 }

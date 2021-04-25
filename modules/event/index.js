@@ -27,7 +27,7 @@ const eventHandle = {
           .populate("rating")
           .skip(skip)
           .limit(limit);
-        const count = await eventModel.find().count();
+        const count = await eventModel.find({ owner: email }).count();
         res.status(200).json({
           content: item,
           pagination: { page: page, size: size, total: count },
