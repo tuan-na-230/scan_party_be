@@ -95,7 +95,7 @@ const eventHandle = {
               res.status(404).json({ message: err });
             });
           const dataSendTicket = {
-            email: "tuan.na.230@gmail.com",
+            email: ele.email,
             qrcode: qrCode,
             nameEvent: eventInfo.name,
             addressEvent: eventInfo.address,
