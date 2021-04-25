@@ -5,25 +5,25 @@ const moment = require('moment')
 
 const emailHandler = {
   async mySendMail(data, template) {
-    let mailTransport = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL,
-        pass: process.env.PASSWORD,
-      },
-      logger: true,
-      debug: false,
-    });
     // let mailTransport = nodemailer.createTransport({
-    //   host: process.env.SMTP_HOST,
-    //   port: process.env.SMTP_PORT,
+    //   service: "gmail",
     //   auth: {
-    //     user: process.env.SMTP_USER,
-    //     pass: process.env.SMTP_PASS,
+    //     user: process.env.EMAIL,
+    //     pass: process.env.PASSWORD,
     //   },
-    //     logger: true,
-    //     debug: false,
+    //   logger: true,
+    //   debug: false,
     // });
+    let mailTransport = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: process.env.SMTP_PORT,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+        logger: true,
+        debug: false,
+    });
 
     // mailTransport.use(
     //   "compile",
