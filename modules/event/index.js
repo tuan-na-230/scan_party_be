@@ -102,7 +102,7 @@ const eventHandle = {
             dateEvent: moment(eventInfo.time.date).format("DD-MM-YYYY"),
             beginTimeEvent: moment(eventInfo.time.beginTime).format("HH:mm"),
             endTimeEvent: moment(eventInfo.time.endTime).format("HH:mm"),
-            nameGuest: "Nguyễn Anh Tuấn",
+            nameGuest: ele.name,
             linkInfo: `http://localhost:3000/guests/${item._id}`
           };
           emailHandler.sendTicket(dataSendTicket);
