@@ -4,22 +4,19 @@ const http = require("http");
 const path = require("path")
 const express = require("express");
 const bodyParser = require("body-parser");
-const authService = require("./authService");
 const routers = require("./routers/index");
 const eventRouter = require("./routers/eventRoutes");
 const guestRouter = require("./routers/guestRoutes");
 const ticketRouter = require("./routers/ticketRoutes");
 const fileUploadRouter = require("./routers/uploadRoutes");
 const ticketTemplateRouter = require("./routers/ticketTemplateRoutes");
-const chatRoomRouter = require("./routers/chatRoomRouter");
-const ratingRouter = require("./routers/ratingRouter");
 const chatHandler = require("./modules/Chat");
 const ticketHandler = require("./modules/ticket");
 
 const PORT = process.env.PORT || 4000;
 const app = express();
 
-app.use(express.static(path.join(__dirname, 'public/build')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(function (req, res, next) {
   // Website you wish to allow to connect
@@ -46,17 +43,16 @@ app.use(function (req, res, next) {
 });
 
 app.use(bodyParser.json());
-// app.use('/api/v1/user', authService.authenticateToken);
 
 app.get('/', function (req, res) {
-  res.sendFile(path.join(__dirname, 'public/build/index.html'))
+  res.sendFile(path.join(__dirname, 'public/index.html'))
 })
 
 app.use(routers);
 app.use("/api/v1/events",  eventRouter);
 app.use("/api/v1/guests", guestRouter);
 app.use("/api/v1/tickets", ticketRouter);
-app.use("/api/v1/files", authService.authenticateToken, fileUploadRouter);
+app.use("/api/v1/files", fileUploadRouter);
 app.use("/api/v1/ticket-template", ticketTemplateRouter);
 
 app.use((req, res, next) => {
