@@ -1,5 +1,6 @@
 const express = require("express");
 const multer = require("multer");
+const authService = require("../authService");
 const fileUploadHandler = require("../modules/fileUpload");
 const fileUploadRouter = new express.Router();
 

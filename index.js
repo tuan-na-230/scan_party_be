@@ -12,6 +12,7 @@ const fileUploadRouter = require("./routers/uploadRoutes");
 const ticketTemplateRouter = require("./routers/ticketTemplateRoutes");
 const chatHandler = require("./modules/Chat");
 const ticketHandler = require("./modules/ticket");
+const authService = require("./authService");
 
 const PORT = process.env.PORT || 4000;
 const app = express();

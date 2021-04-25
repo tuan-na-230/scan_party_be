@@ -114,7 +114,7 @@ const emailHandler = {
                         </tr>
                         <tr>
                             <td style="color: #333333">
-                                <p style="color: #333333; text-align: center;">Copyright © scan-party.herokuapp.com. All rights reserved/</p>
+                                <p style="color: #333333; text-align: center;">Copyright © scan-party.herokuapp.com. All rights reserved</p>
                             </td>
                         </tr>
                     </table>

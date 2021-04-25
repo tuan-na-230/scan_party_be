@@ -2,6 +2,7 @@ const fileUploadModel = require("./model");
 
 const fileUploadHandler = {
     async uploadExcel(req, res, next) {
+        console.log(req.body)
         if (req.file) {
             try {
                 const data = {
@@ -9,7 +10,6 @@ const fileUploadHandler = {
                     path: `${process.env.DOMAIN}/uploads/excels/${req.file.filename}`,
                     user: req.body.id,
                     type: req.body.type,
-                    user: req.email
                 };
                 const item = await fileUploadModel.create(data);
                 if (item) {
