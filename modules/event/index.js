@@ -104,7 +104,7 @@ const eventHandle = {
             beginTimeEvent: moment(eventInfo.time.beginTime).format("HH:mm"),
             endTimeEvent: moment(eventInfo.time.endTime).format("HH:mm"),
             nameGuest: ele.name,
-            linkInfo: `http://localhost:3000/guests/${item._id}`
+            linkInfo: `${process.env.DOMAIN}/guests/${item._id}`
           };
           emailHandler.sendTicket(dataSendTicket);
           res.status(200).json({ message: "create_success" });
