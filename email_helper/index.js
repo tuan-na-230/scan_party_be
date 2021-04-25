@@ -4,72 +4,75 @@ const nodemailer = require("nodemailer");
 const moment = require('moment')
 
 const emailHandler = {
-  async mySendMail(data, template) {
-    let mailTransport = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL,
-        pass: process.env.PASSWORD,
-      },
-      logger: true,
-      debug: false,
-    });
-    // let mailTransport = nodemailer.createTransport({
-    //   host: process.env.SMTP_HOST,
-    //   port: process.env.SMTP_PORT,
-    //   auth: {
-    //     user: process.env.SMTP_USER,
-    //     pass: process.env.SMTP_PASS,
-    //   },
-    //     logger: true,
-    //     debug: false,
-    // });
+    async mySendMail(data, template) {
+        let mailTransport = nodemailer.createTransport({
+            //   service: "gmail",
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true,
+            auth: {
+                user: process.env.EMAIL,
+                pass: process.env.PASSWORD,
+            },
+            logger: true,
+            debug: false,
+        });
+        // let mailTransport = nodemailer.createTransport({
+        //   host: process.env.SMTP_HOST,
+        //   port: process.env.SMTP_PORT,
+        //   auth: {
+        //     user: process.env.SMTP_USER,
+        //     pass: process.env.SMTP_PASS,
+        //   },
+        //     logger: true,
+        //     debug: false,
+        // });
 
-    // mailTransport.use(
-    //   "compile",
-    //   hbs({
-    //     viewEngine: "express-handlebars",
-    //     viewEngine: {
-    //         partialsDir: 'templates/partials',
-    //         extname: ".handlebars",
-    //         layout: 'templates/layouts'
-    //     },
-    //     viewPath: "templates",
-    //     extName: ".hbs",
-    //   })
-    // );
+        // mailTransport.use(
+        //   "compile",
+        //   hbs({
+        //     viewEngine: "express-handlebars",
+        //     viewEngine: {
+        //         partialsDir: 'templates/partials',
+        //         extname: ".handlebars",
+        //         layout: 'templates/layouts'
+        //     },
+        //     viewPath: "templates",
+        //     extName: ".hbs",
+        //   })
+        // );
 
-    let { to, subject, text, html } = data;
-    if (!to) {
-      throw new Error(`Missing info 'to'!`);
-    }
-    if (!subject) {
-      throw new Error(`Missing info 'subject'!`);
-    }
-
-    await mailTransport.sendMail(
-      {
-        from: "<Scan-party>",
-        to,
-        subject,
-        text,
-        html,
-      },
-      (err, info) => {
-        if (err) {
-          console.error(err.message);
-        } else {
-          console.log({ message: "success", info });
+        let { to, subject, text, html } = data;
+        if (!to) {
+            throw new Error(`Missing info 'to'!`);
         }
-      }
-    );
-  },
-  async sendMailVerifyEmail(data) {
-    let dataSend = {
-      to: data.email,
-      subject: "Confirm your email",
-      text: "For clients with plaintext support only",
-      html: `
+        if (!subject) {
+            throw new Error(`Missing info 'subject'!`);
+        }
+
+        await mailTransport.sendMail(
+            {
+                from: "<Scan-party>",
+                to,
+                subject,
+                text,
+                html,
+            },
+            (err, info) => {
+                if (err) {
+                    console.error(err.message);
+                } else {
+                    console.log({ message: "success", info });
+                }
+            }
+        );
+    },
+    async sendMailVerifyEmail(data) {
+        let dataSend = {
+            to: data.email,
+            subject: "Confirm your email",
+            text: "For clients with plaintext support only",
+            html: `
             <table style="width: 100%; background-color: #fff; border-top: 3px solid #ee82ee; display: flex; justify-content: center;">
                 <tbody style="width: 650px; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; margin: 10px;">
                 <tr>
@@ -87,9 +90,8 @@ const emailHandler = {
                             <td
                                 style="width: 100%; background-color: #ff6347;text-align: center; margin: 0px 10px; border-radius: 5px; color: #fff; padding: 10px">
                                 <p>your scan-party.herokuapp.com account was created, click <a
-                                        href="${process.env.DOMAIN}/api/v1/users/verify-email/${
-                                          data._id
-                                        }">here</a> to enable your account</p>
+                                        href="${process.env.DOMAIN}/api/v1/users/verify-email/${data._id
+                }">here</a> to enable your account</p>
                             </td>
                         </tr>
                         <tr>
@@ -122,16 +124,16 @@ const emailHandler = {
                 </tr>
                 </tbody>
             </table>`,
-    };
-    await this.mySendMail(dataSend, "index");
-  },
+        };
+        await this.mySendMail(dataSend, "index");
+    },
 
-  async sendMailResetPassword(data, newPassword) {
-    let dataSend = {
-      to: data.email,
-      subject: "New Password",
-      text: "For clients with plaintext support only",
-      html: `
+    async sendMailResetPassword(data, newPassword) {
+        let dataSend = {
+            to: data.email,
+            subject: "New Password",
+            text: "For clients with plaintext support only",
+            html: `
             <div style="padding:0;background-color:#fafafa;height:100%!important;margin:0 auto!important;width:100%!important">
         <div style="Margin:0 auto;max-width:600px">
             <table
@@ -174,16 +176,16 @@ const emailHandler = {
             </table>
         </div>
     </div>`,
-    };
-    await this.mySendMail(dataSend, "index");
-  },
+        };
+        await this.mySendMail(dataSend, "index");
+    },
 
-  async sendTicket(data) {
-    let dataSend = {
-      to: data.email,
-      subject: `Vé mời tham gia sự kiện ${data.nameEvent}`,
-      text: "For clients with plaintext support only",
-      html: `
+    async sendTicket(data) {
+        let dataSend = {
+            to: data.email,
+            subject: `Vé mời tham gia sự kiện ${data.nameEvent}`,
+            text: "For clients with plaintext support only",
+            html: `
         <div style="padding:0;background-color:#fafafa;height:100%!important;margin:0 auto!important;width:100%!important">
             <div style="Margin:0 auto;max-width:650px">
                 <table style="border-collapse: collapse; margin: 0 auto; width: 100%; max-width: 650px; background-color: #4b2999">
@@ -253,16 +255,16 @@ const emailHandler = {
                 </table>
             </div>
         </div>`,
-    };
-    await this.mySendMail(dataSend, "index");
-  },
+        };
+        await this.mySendMail(dataSend, "index");
+    },
 
-  async sendMailDelEvent(data) {
-    let dataSend = {
-      to: data.email,
-      subject: `Thông báo hủy sự kiện: ${data.name}`,
-      text: "For clients with plaintext support only",
-      html: `l
+    async sendMailDelEvent(data) {
+        let dataSend = {
+            to: data.email,
+            subject: `Thông báo hủy sự kiện: ${data.name}`,
+            text: "For clients with plaintext support only",
+            html: `l
         <div style="padding:0;background-color:#fafafa;height:100%!important;margin:0 auto!important;width:100%!important">
             <div style="Margin:0 auto;max-width:650px">
                 <table style="border-collapse: collapse; margin: 0 auto; width: 100%; max-width: 650px; background-color: #4b2999">
@@ -305,9 +307,9 @@ const emailHandler = {
                 </table>
             </div>
         </div>`,
-    };
-    await this.mySendMail(dataSend, "index");
-  },
+        };
+        await this.mySendMail(dataSend, "index");
+    },
 };
 
 module.exports = emailHandler;
