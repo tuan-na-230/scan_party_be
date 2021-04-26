@@ -2,7 +2,6 @@ const fileUploadModel = require("./model");
 
 const fileUploadHandler = {
     async uploadExcel(req, res, next) {
-        console.log(req.body)
         if (req.file) {
             try {
                 const data = {
